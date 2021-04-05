@@ -1,0 +1,21 @@
+<head>
+  <%- include("./blocks/header.ejs") %>
+  <script src="/assets/tablesort.js"></script>
+</head>
+
+<body>
+  <div class="content">
+    <%- include("./blocks/navbar.ejs", { active: 'home' }) %>
+    <div class="showcase">
+        
+        <h1 class="slogan">THE <span>ONLY</span> IMAGE GENERATION API YOU NEED</h1>
+        <!-- --header=<span>"Authorization: tokenhere"</span> -->
+        <code class="code-sample ">wget https://wingcap.vd.wtf/image/highway-sign?text=wing%20capture%20is%20the%20best</code>
+        <div class="buttons">
+            <!-- <a href="/request" class="showcase-button">Get Access</a> -->
+            <a href="/documentation" class="showcase-button">Documentation</a>
+        </div>
+    </div>
+    <%- include("./blocks/footer.ejs") %>
+  </div>
+</body>

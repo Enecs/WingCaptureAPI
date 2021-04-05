@@ -1,0 +1,19 @@
+const Command = require('@bot/base/Command');
+
+module.exports = class TempCMD extends Command {
+    constructor (client) {
+      super(client, {
+        name: "",
+        description: "",
+        category: "Bots",
+        usage: "",
+        aliases: [],
+        permLevel: "User"
+      });
+    }
+
+    async run (client, message, args, MessageEmbed) {
+      let user = args[0] && client.users.cache.get(args[0].replace(/[\\<>@#&!]/g, ""));
+      
+    }
+}

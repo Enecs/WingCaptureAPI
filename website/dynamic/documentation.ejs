@@ -1,0 +1,91 @@
+<head>
+  <%- include("./blocks/header.ejs") %>
+</head>
+
+<body>
+  <div class="content">
+    <%- include("./blocks/navbar.ejs", { active: 'docs' }) %>
+    <div class="side-nav">
+            <h1>Contents</h1>
+            <a href="#endpoints">Endpoints</a>
+            <a href="#auth">Authorization</a>
+            <a href="#ratelimits">Rate Limits</a>
+      </div>
+    <div class="actual-content">
+      <div id="endpoints" style="margin-left: 13rem;">
+          <h1>Endpoints</h1>
+          <!-- <span class="warning">All endpoints require an <kbd>Authorization</kbd> header containing your key. You can request a key on the dashboard!</span><br><br><br> -->
+          <!-- <span class="info">All endpoints also support POST requests with JSON data. These use arrays, so use <kbd>{"avatars": [], "usernames": [], "text": "hi"}</kbd></span> -->
+          <%
+            const data = [
+              { path: "image/gru-plan", rate: 5, params: ["text"] },
+              { path: "image/highway-sign", rate: 5, params: ["text"] },
+              { path: "image/speedlimit", rate: 5, params: ["text"] },
+              { path: "image/two-buttons", rate: 5, params: ["text"] },
+              { path: "image/could-read", rate: 5, params: ["text"] },
+              { path: "image/spongebob-burn", rate: 5, params: ["text"] },
+              { path: "image/channel-topic", rate: 5, params: ["name", "topic"] },
+            ]
+          %>
+          <% for(const endpoint of data) { %>
+          <div style="background-color: #23272A; padding: 0.75rem; border-radius: 3px;" class="card">
+            <p><b style="color: lawngreen">GET </b><%= process.env.DOMAIN %>/<%= endpoint.path %></p>
+            <% if(endpoint.__doc__) { %>
+            <p>Details:</p>
+            <kbd><%- endpoint.__doc__.replace(/\\n/g, '<br>') %></kbd>
+            <% } %>
+            <p>Rate Limit</p>
+            <kbd><%= endpoint.rate ? endpoint.rate : 5 %> request<%= endpoint.rate != 1 ? 's' : ''%> per <%= endpoint.per ? endpoint.per : ''%> second<%= endpoint.per != 1 ? 's' : ''%></kbd>
+            <p>Supported Query Parameters: </p>
+            <% for(const p of endpoint.params) { %>
+              <% if (p == 'avatar0') { %>
+                <kbd>avatar1: Image URL. Usually a Discord Avatar. Supports at least JPG, PNG and BMP!</kbd><br>
+              <% } else if(p == 'avatar1') { %>
+                <kbd>avatar2: Image URL. Used when two users are involved. Supports at least JPG, PNG and BMP!</kbd><br>
+              <% } else if(p == 'username0') { %>
+                <kbd>username1: String. Username for the first user.</kbd><br>
+              <% } else if(p == 'username1') { %>
+                <kbd>username2: String. Username for the second user.</kbd><br>
+              <% } else if (p == 'text') { %>
+                <kbd><%= p %>: String. Text to show on the generated image.</kbd><br>
+              <% } else { %>
+                <kbd><%= p %>: Endpoint specific parameter</kbd><br>
+              <% } %>
+            <% } %>
+          </div>
+          <% } %>
+      </div>
+      <div id="auth" style="margin-left: 13rem;">
+          <div class="card">
+              <h1>Authorization</h1>
+              <p>All requests must be made with an authorization header that includes your API key! If you don't have a key, request one on the dashboard.</p>
+              <p>Example:</p>
+              <code style="background-color: #23272A">{"Authorization": "tokengoeshere"}</code>
+          </div>
+      </div>
+      <div id="ratelimits" style="margin-left: 13rem;">
+          <div class="card">
+              <h1>Rate Limits</h1>
+              <p>Each endpoint has it's own ratelimit, which you can find in it's documentation. Additionally, the API has a global ratelimit of 300 requests per minute.</p>
+              <p>
+                  The ratelimits for the endpoint are defined with X-RateLimit-:key, while the global ratelimit is defined with X-Global-RateLimit-:key.<br>
+                  When the global ratelimit is hit, the body will contain an additional JSON key "global" which will be set to true.
+              </p>
+              <p>Ratelimit Headers:</p>
+              <ul>
+                  <li>X-RateLimit-Limit: Maximum usage allowed per timeframe</li>
+                  <li>X-Ratelimit-Remaining: Remaining requests that can be made during the timeframe</li>
+                  <li>X-RateLimit-Reset: Timestamp indicating when the ratelimit will reset in milliseconds.</li>
+                  <li>Retry-After: Time to wait in milliseconds until another request can be made. Only exposed if ratelimit is reached.</li>
+              </ul>
+              <ul>
+                  <li>X-Global-RateLimit-Limit: Maximum global usage allowed per timeframe</li>
+                  <li>X-Global-Ratelimit-Remaining: Remaining requests that can be made globally during the timeframe</li>
+                  <li>X-Global-RateLimit-Reset: Timestamp indicating when the global ratelimit will resett in milliseconds.</li>
+                  <li>Retry-After: Time to wait in milliseconds until another request can be made. Only exposed if ratelimit is reached.</li>
+              </ul>
+          </div>
+      </div>
+      </div>
+    </div>
+</body>
